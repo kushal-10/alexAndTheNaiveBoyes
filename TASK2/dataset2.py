@@ -1,4 +1,4 @@
-from datasets import Dataset, DatasetDict
+from datasets import Dataset, DatasetDict, load_dataset
 import pandas as pd
 from transformers import AutoTokenizer
 from transformers import DataCollatorWithPadding
@@ -11,9 +11,11 @@ data_collator = DataCollatorWithPadding(tokenizer=tokenizer)
 accuracy = evaluate.load("accuracy")
 
 def prepare_data():
-    # READ CSV FILES FOR TRAIN DATA AND TEST DATA
-    train_df = pd.read_csv("TASK2/data/DBPEDIA_train.csv")
-    test_df = pd.read_csv("TASK2/data/DBPEDIA_test.csv")
+    # LOAD CSV FILES FOR TRAIN DATA AND TEST DATA 
+    dataset = load_dataset("DeveloperOats/DBPedia_Classes")
+   
+    train_df = pd.DataFrame(dataset["train"])
+    test_df = pd.DataFrame(dataset["test"])
 
     # SPLIT THE DF ACCORDING TO CLASSIFICATION LEVEL
     train1, train2, train3 = split_df(train_df)

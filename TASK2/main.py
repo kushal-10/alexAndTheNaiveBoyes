@@ -12,8 +12,7 @@ def main():
 
     ###############################FOR HUGGINGFACE###################################
     # UNCOMMENT THIS TO SAVE THE PROCESSED DATA TO DISK (approx 3 mins.)
-    # CHECK IF TASK2/tokens folder exists and there are DBPEDIA_train and DBPEDIA_test csv files in TASK2/data
-    # prepare_data()
+    prepare_data()
 
     return None
     ###############################FOR BASELINE#######################################
