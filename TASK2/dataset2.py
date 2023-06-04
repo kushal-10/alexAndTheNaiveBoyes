@@ -1,4 +1,4 @@
-from datasets import Dataset, DatasetDict, load_dataset
+from datasets import Dataset, DatasetDict, load_dataset, ClassLabel
 import pandas as pd
 from transformers import AutoTokenizer
 from transformers import DataCollatorWithPadding
@@ -21,6 +21,9 @@ def prepare_data():
     train1, train2, train3 = split_df(train_df)
     test1, test2, test3 = split_df(test_df)
 
+    # print(len(train1['label']))
+    # print(train1.head(5))
+
     # COMBINE TRAIN AND TEST DATASET IN DICTIONARY FORM 
     data1 = DatasetDict({"train":train1, "test":test1})
     data2 = DatasetDict({"train":train2, "test":test2})
@@ -30,6 +33,10 @@ def prepare_data():
     tokens1 = data1.map(preprocess_function, batched=True)
     tokens2 = data2.map(preprocess_function, batched=True)
     tokens3 = data3.map(preprocess_function, batched=True)
+
+    # tokens1 = data1.map(tokenize, batched=True)
+    # tokens2 = data2.map(tokenize, batched=True)
+    # tokens3 = data3.map(tokenize, batched=True)
 
     # SAVE THESE DATASETS IN DICTIONARY FORM TO DISK
     tokens1.save_to_disk("TASK2/tokens/data1")
@@ -44,13 +51,34 @@ def compute_metrics(eval_pred):
     return accuracy.compute(predictions=predictions, references=labels)
 
 def preprocess_function(data):
-    return tokenizer(data["text"], truncation=True)
+    # ADD data['labels'] too (labels are 'str' and not 'int')
+    return tokenizer(data["text"], truncation=True, padding="max_length")
+
+# def tokenize(batch):
+#     tokens = tokenizer(batch['text'], padding="max_length", truncation=True, max_length=128)
+#     tokens["label"] = [features["label"].str2int(label) if label is not None else None for label in batch["label"]]
+#     return tokens
+
+label = ClassLabel(num_classes=9)
+
+def tokenize(batch):
+    tokens = tokenizer(batch['text'], padding=True, truncation=True)
+    tokens['label'] = label.str2int(batch['label'])
+    return tokens
     
 def split_df(df):
     
     # SPLIT THE DATAFRAME FOR THREE LEVELS OF CLASSIFICATION
     df1 = df[['text', 'l1']]
     df1.rename(columns={'l1':'label'}, inplace=True)
+    # print(df1.head(3))
+    l1 = ['Agent', 'Device', 'Event', 'Place', 'Species', 'SportsSeason', 'TopicalConcept', 'UnitOfWork', 'Work']
+    l2 = [0, 1, 2, 3, 4, 5, 6, 7, 8]
+    for i in range(len(l1)):
+        df1 = df1.replace({'label':l1[i]}, {'label':l2[i]})
+
+    # print(df1.head(3))
+
     df2 = df[['text', 'l2']]
     df2.rename(columns={'l2':'label'}, inplace=True)
     df3 = df[['text', 'l3']]
