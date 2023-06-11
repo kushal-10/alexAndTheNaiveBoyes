@@ -1,5 +1,0 @@
-Add CSV files manually in data folder
-
-Hierarchy
-main <- model <-dataset FOR BASELINE
-main <- dataset2 
