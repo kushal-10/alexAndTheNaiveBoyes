@@ -1,0 +1,10 @@
+,Agent,Device,Event,Place,Species,SportsSeason,TopicalConcept,UnitOfWork,Work
+Agent,25331,0,17,39,0,16,1,0,12
+Device,0,55,0,0,0,0,0,0,0
+Event,14,0,3846,5,0,1,1,0,4
+Place,38,0,5,9379,0,0,0,0,0
+Species,0,0,0,2,4783,0,0,0,0
+SportsSeason,0,0,0,0,0,1271,0,0,0
+TopicalConcept,1,0,2,1,0,0,155,0,2
+UnitOfWork,0,0,0,0,0,0,0,373,0
+Work,24,0,1,0,0,0,1,0,4030

@@ -1,5 +1,6 @@
 from helper import prepare_data
 from train import train
+from predict import predictions
 import argparse
 
 import warnings
@@ -34,6 +35,12 @@ def main():
         action='store_true'
     )
 
+    parser.add_argument(
+        '--predict', dest='predict',
+        help='Use this to predict and save the outputs for the test dataset',
+        action='store_true'
+    )
+
     args = parser.parse_args()
 
     if args.prepare:
@@ -44,13 +51,18 @@ def main():
         print("Training the model for Level 1 classification.....")
         train(9)
 
-    elif args.train2:
-        print("Training the model for Level 2 classification.....")
-        train(70)
+    # elif args.train2:
+    #     print("Training the model for Level 2 classification.....")
+    #     train(70)
     
+    # elif args.train3:
+    #     print("Training the model for Level 3 classification.....")
+    #     train(219)
+
     else:
-        print("Training the model for Level 3 classification.....")
-        train(219)
+        print("Getting predictions and saving them.....")
+        predictions()
+
 
     return None
     
