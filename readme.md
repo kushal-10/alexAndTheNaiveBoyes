@@ -47,6 +47,9 @@ python3 TASK2/main.py --predict
 ```
 
 ### Results
+![alt text](https://github.com/kushal-10/alexAndTheNaiveBoyes/blob/main/TASK2/figures/cfm.png?raw=true)
+
+
 
 
 
