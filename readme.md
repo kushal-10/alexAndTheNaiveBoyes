@@ -17,16 +17,27 @@ We finetune the distilbert-base-uncased transformer model provided by [Huggingfa
 ### Usage
 
 1) After cloning the repository, the directory tree should look like this:
+
 --TASK2
+
 ---figures
+
 ---label_vals
+
 ---results
+
 ---tables
+
 ---dataset_properties.ipynb
+
 ---helper.py
+
 ---lime_utils.py
+
 ---main.py
+
 ---predict.py
+
 ---train.py
 
  2) The next step is to generate the tokens from the raw data, prepare them for the model, and save them to disk. This can be done by running:
