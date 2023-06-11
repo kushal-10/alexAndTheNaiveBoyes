@@ -47,6 +47,19 @@ python3 TASK2/main.py --predict
 ```
 
 ### Results
+The tuning of the model for level 1 classification was done on an NVIDIA 1050Ti GPU. The tuning was done for the following set of parameters
+*learning_rate=2e-5
+*per_device_train_batch_size=8
+*per_device_eval_batch_size=8
+*num_train_epochs=2
+*weight_decay=0.01
+
+After 1st epoch:
+{'eval_loss': 0.023077525198459625, 'eval_accuracy': 0.9955094252722309, 'eval_runtime': 2150.2467, 'eval_samples_per_second': 28.273, 'eval_steps_per_second': 3.534, 'epoch': 1.0}   
+After 2nd epoch :
+{'eval_loss': 0.021864905953407288, 'eval_accuracy': 0.9959042010724742, 'eval_runtime': 2302.6637, 'eval_samples_per_second': 26.402, 'eval_steps_per_second': 3.301, 'epoch': 2.0} 
+
+The confusion matrix:
 <img src="TASK2/figures/cfm.png" width="512"/>
 
 
