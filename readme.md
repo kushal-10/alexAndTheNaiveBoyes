@@ -60,6 +60,7 @@ After 2nd epoch :
 {'eval_loss': 0.021864905953407288, 'eval_accuracy': 0.9959042010724742, 'eval_runtime': 2302.6637, 'eval_samples_per_second': 26.402, 'eval_steps_per_second': 3.301, 'epoch': 2.0} 
 
 The confusion matrix:
+
 <img src="TASK2/figures/cfm.png" width="512"/>
 
 
