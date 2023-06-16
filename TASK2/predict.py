@@ -5,11 +5,12 @@ import numpy as np
 from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 import seaborn as sns
 import matplotlib.pyplot as plt
+import torch 
 
 
 def predictions():
 
-   model = AutoModelForSequenceClassification.from_pretrained("TASK2/model1/checkpoint-60236", num_labels=9)
+   model = AutoModelForSequenceClassification.from_pretrained("carbonnnnn/T2L1DISTILBERT", num_labels=9)
    tokenizer = AutoTokenizer.from_pretrained("distilbert-base-uncased")
 
    pipe = TextClassificationPipeline(model=model, tokenizer=tokenizer, return_all_scores=False)
@@ -22,7 +23,9 @@ def predictions():
    test_df = pd.DataFrame(dataset["test"])
 
    predictions = []
+   texts_id = []
    skip = []
+   print(len(test_df))
    for i in range(len(test_df)):
       if i%1000 == 0:
          print("Evaluation for " + str(i) + " samples Done.....")
@@ -32,13 +35,20 @@ def predictions():
       # SKIP TEXTS HAVING LENGTH LONGER THAN 1000 
       if len(text) > 1000:
          skip.append(str(i))
-      else:
-         out = pipe(text)
-         predictions.append(out[0]['label'])
+         
 
-   np.savetxt('TASK2/results/predictions.txt', predictions, fmt="%s")
-   np.savetxt('TASK2/results/skip.txt', skip, fmt="%s")
-   save_cfm()
+      else:
+         texts_id.append(int(i))
+         out = pipe(text)
+         
+         predictions.append(int(out[0]['label'][6]))
+
+   torch.save(torch.Tensor(texts_id),'TASK2/results/test_texts.pt')
+   torch.save(torch.Tensor(predictions),'TASK2/results/test_out.pt')
+
+   #np.savetxt('TASK2/results/predictions.txt', predictions, fmt="%s")
+   #np.savetxt('TASK2/results/skip.txt', skip, fmt="%s")
+   #save_cfm()
 
    return None
 
@@ -87,4 +97,4 @@ def save_cfm():
    return None
 
 
-save_cfm()
+#save_cfm()
