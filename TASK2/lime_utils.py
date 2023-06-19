@@ -15,7 +15,8 @@ import time
 from transformers import pipeline
 import numpy as np
 import pandas as pd 
-
+import warnings
+warnings.filterwarnings("ignore")
 def explain_list(text_ids,file_name):
   class_names = ['Agent',  'Device', 'Event',  'Place',  'Species', 'SportsSeason',  'TopicalConcept',  'UnitOfWork',  'Work']
   explainer = LimeTextExplainer(class_names=class_names)
@@ -24,7 +25,7 @@ def explain_list(text_ids,file_name):
   tokenizer = AutoTokenizer.from_pretrained("distilbert-base-uncased")
   model = AutoModelForSequenceClassification.from_pretrained("carbonnnnn/T2L1DISTILBERT", num_labels=9, id2label=id2label, label2id=label2id)
   model.eval()
-
+  softmax = nn.Softmax()
   def predictor(texts):
     softmax = nn.Softmax()
     outputs = model(**tokenizer(texts, return_tensors="pt", padding=True))
@@ -35,30 +36,35 @@ def explain_list(text_ids,file_name):
   dataset = load_dataset("DeveloperOats/DBPedia_Classes")
   test_df = pd.DataFrame(dataset["test"])
   true_labels = torch.load("TASK2/results/true_labels.pt")
-  
+  text_ids_all = torch.load("TASK2/results/test_texts.pt")
   out = torch.load("TASK2/results/test_out.pt")
 
   #EXPLAIN AN INSTANCE:
   explanations = dict()
 
-  for index_in_dataset in range(len(text_ids)):
+  for index_in_dataset in text_ids:
     print("Sample "+ str(index_in_dataset))
    #SELECT THE ID OF THE INSTANCE YOU WANT TO EXPLAIN HERE
     
     txt = test_df['text'].iloc[index_in_dataset]
+    print(txt)
+    ii = list(text_ids_all).index(index_in_dataset)   
+    print("INDEX IN list "+str(ii))
+    start_time = time.time()
+    exp = explainer.explain_instance(txt, predictor, num_features = 10,top_labels=1,num_samples= 800)
+
+    #explanations[index_in_dataset]=exp.as_list(true_labels[index_in_dataset])
+    print("--- %s seconds ---" % (time.time() - start_time))
+
+    f = open("TASK2/explainers/"+file_name+"/exp_html_"+str(index_in_dataset)+".html",'w')
  
-  #start_time = time.time()
-    exp = explainer.explain_instance(txt, predictor, num_features = 10,top_labels=1,num_samples= 1000)
-    explanations[index_in_dataset]=exp.as_list(true_labels[index_in_dataset])
- 
-   # f = open("TASK2/explainers/exp_html_"+str(index_in_dataset)+".html",'w')
-   # f.write(exp.as_html(labels = [true_labels[index_in_dataset]]))  
+  
+    f.write(exp.as_html(labels = [int(out[ii].item())]))  
 
   # save dictionary 
   with open("TASK2/results/"+file_name+".pkl", 'wb') as fp:
       pkl.dump(explanations, fp)
       print('dictionary saved successfully to file')
-
 
 #----------------------------------------------------------------------
 
@@ -69,7 +75,6 @@ with open("TASK2/results/explanations.pkl", 'rb') as fp:
     p = pkl.load(fp)
     #print(p)
    # print('dictionary load successfully from file')
-#print("--- %s seconds ---" % (time.time() - start_time))
 
 # #GET prediction - so that we would now what label to plot (can plot all if you want)
 # classifier = pipeline("text-classification", model="carbonnnnn/T2L1DISTILBERT")

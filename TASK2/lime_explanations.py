@@ -21,14 +21,19 @@ out = torch.load("TASK2/results/test_out.pt")
 true_labels = torch.load("TASK2/results/true_labels.pt")
 
 true_labels= []
-
+text_ids_all = torch.load("TASK2/results/test_texts.pt")
 labelstr = np.loadtxt('TASK2/label_vals/l1.txt', dtype="str")
-for i in range(len(text_ids)):
-    s=test_df['l1'].iloc[i]
+for i in text_ids:
+   
+    s=test_df['l1'].iloc[int(i)]
     true_labels.append(label_dict[s])
 torch.save(true_labels, "TASK2/results/true_labels.pt")
 
 true_labels = torch.load("TASK2/results/true_labels.pt")
 print(len(text_ids))
 print(len(out))
-print(true_labels[14])
+print(test_df['l1'].iloc[56078])
+
+index_in_dataset = 56078 #SELECT THE ID OF THE INSTANCE YOU WANT TO EXPLAIN HERE
+txt = test_df["text"][index_in_dataset]
+print(txt)
